@@ -193,6 +193,41 @@ class Writer extends XMLWriter
 
         return true;
     }
+    
+    /**
+     * Write a full element tag and it's contents.
+     *
+     * This method automatically closes the element as well.
+     *
+     * The element name may be specified in clark-notation.
+     *
+     * Examples:
+     *
+     *    $writer->writeElement('{http://www.w3.org/2005/Atom}author',null);
+     *    becomes:
+     *    <author xmlns="http://www.w3.org/2005" />
+     *
+     *    $writer->writeElement('{http://www.w3.org/2005/Atom}author', [
+     *       '{http://www.w3.org/2005/Atom}name' => 'Evert Pot',
+     *    ]);
+     *    becomes:
+     *    <author xmlns="http://www.w3.org/2005" /><name>Evert Pot</name></author>
+     *
+     * Note: this function doesn't have the string typehint, because PHP's
+     * XMLWriter::startElement doesn't either.
+     *
+     * @param array|string|object|null $content
+     */
+    public function writeFullElement($name, $content = null): bool
+    {
+        $this->startElement($name);
+        if (!is_null($content)) {
+            $this->write($content);
+        }
+        $this->fullEndElement();
+
+        return true;
+    }
 
     /**
      * Writes a list of attributes.
